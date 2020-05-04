@@ -1,0 +1,23 @@
+diff --git a/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp b/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp
+index 044134f..0ee271e 100644
+--- a/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp
++++ b/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp
+@@ -114,14 +114,16 @@ bool NvFBCToSysCreate(
+   unsigned int * maxHeight
+ )
+ {
++  int magic[] = { 0x0D7BC620, 0x4C17E142, 0x5E6B5997, 0x4B5A855B };
++
+   NvFBCCreateParams params = {0};
+ 
+   params.dwVersion         = NVFBC_CREATE_PARAMS_VER;
+   params.dwInterfaceType   = NVFBC_TO_SYS;
+   params.pDevice           = NULL;
+   params.dwAdapterIdx      = 0;
+-  params.dwPrivateDataSize = privDataSize;
+-  params.pPrivateData      = privData;
++  params.dwPrivateDataSize = sizeof(magic);
++  params.pPrivateData      = &magic;
+ 
+   if (nvapi.createEx(&params) != NVFBC_SUCCESS)
+   {
