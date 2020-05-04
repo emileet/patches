@@ -1,0 +1,59 @@
+diff --git a/.SRCINFO b/.SRCINFO
+index ada273a..98e95fd 100644
+--- a/.SRCINFO
++++ b/.SRCINFO
+@@ -1,10 +1,10 @@
+ pkgbase = obs-ndi-bin
+ 	pkgdesc = Network A/V in OBS Studio with NewTek's NDI technology
+ 	pkgver = 4.9.0
+-	pkgrel = 2
++	pkgrel = 3
+ 	url = https://github.com/Palakis/obs-ndi
+ 	arch = x86_64
+-	license = LGPL2.0
++	license = GPL2
+ 	depends = obs-studio
+ 	depends = avahi
+ 	depends = libndi
+diff --git a/PKGBUILD b/PKGBUILD
+index fd6c18a..929a651 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -3,11 +3,11 @@
+ pkgname=obs-ndi-bin
+ _pkgname=obs-ndi
+ pkgver=4.9.0
+-pkgrel=2
++pkgrel=3
+ _pkgrel=1
+ pkgdesc="Network A/V in OBS Studio with NewTek's NDI technology"
+ arch=('x86_64')
+-license=('LGPL2.0')
++license=('GPL2')
+ url="https://github.com/Palakis/${_pkgname}"
+ provides=('obs-ndi')
+ conflicts=('obs-ndi-git')
+@@ -15,10 +15,19 @@ depends=('obs-studio' 'avahi' 'libndi')
+ source=("${url}/releases/download/${pkgver}/obs-ndi_${pkgver}-${_pkgrel}_amd64.deb")
+ sha256sums=('eb8b30007e8d0521ea0e7b41da8d9ad1dc89404cfdc390ccf832ab7d1c66050e')
+ 
++prepare() {
++    cd ${srcdir}
++
++    mkdir -p ${pkgname}
++    tar -xJf data.tar.xz -C ${pkgname}
++    
++    mv ${pkgname}/usr/lib/x86_64-linux-gnu/obs-plugins ${pkgname}/usr/lib/obs-plugins
++    rmdir ${pkgname}/usr/lib/x86_64-linux-gnu
++    chmod 755 $(find ${pkgname} -type d)
++}
++
+ package() {
+-	cd "${srcdir}"
++	cd ${srcdir}
+ 
+-	tar -xJf data.tar.xz -C "${pkgdir}"
+-	
+-	chmod 755 $(find "${pkgdir}" -type d)
++	cp -a ${pkgname}/. ${pkgdir}
+ }
