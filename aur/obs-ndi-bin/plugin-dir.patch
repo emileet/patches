@@ -16,7 +16,7 @@ index ada273a..98e95fd 100644
  	depends = avahi
  	depends = libndi
 diff --git a/PKGBUILD b/PKGBUILD
-index fd6c18a..929a651 100644
+index fd6c18a..c30d94d 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
 @@ -3,11 +3,11 @@
@@ -33,7 +33,7 @@ index fd6c18a..929a651 100644
  url="https://github.com/Palakis/${_pkgname}"
  provides=('obs-ndi')
  conflicts=('obs-ndi-git')
-@@ -15,10 +15,19 @@ depends=('obs-studio' 'avahi' 'libndi')
+@@ -15,10 +15,22 @@ depends=('obs-studio' 'avahi' 'libndi')
  source=("${url}/releases/download/${pkgver}/obs-ndi_${pkgver}-${_pkgrel}_amd64.deb")
  sha256sums=('eb8b30007e8d0521ea0e7b41da8d9ad1dc89404cfdc390ccf832ab7d1c66050e')
  
@@ -43,8 +43,11 @@ index fd6c18a..929a651 100644
 +    mkdir -p ${pkgname}
 +    tar -xJf data.tar.xz -C ${pkgname}
 +
-+    mv ${pkgname}/usr/lib/x86_64-linux-gnu/obs-plugins ${pkgname}/usr/lib/obs-plugins
-+    rmdir ${pkgname}/usr/lib/x86_64-linux-gnu
++    if [ ! -d ${pkgname}/usr/lib/obs-plugins ]; then
++        cp -a ${pkgname}/usr/lib/x86_64-linux-gnu/obs-plugins ${pkgname}/usr/lib/obs-plugins
++        rm -r ${pkgname}/usr/lib/x86_64-linux-gnu
++    fi
++
 +    chmod 755 $(find ${pkgname} -type d)
 +}
 +
