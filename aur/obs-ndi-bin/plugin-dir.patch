@@ -42,7 +42,7 @@ index fd6c18a..929a651 100644
 +
 +    mkdir -p ${pkgname}
 +    tar -xJf data.tar.xz -C ${pkgname}
-+    
++
 +    mv ${pkgname}/usr/lib/x86_64-linux-gnu/obs-plugins ${pkgname}/usr/lib/obs-plugins
 +    rmdir ${pkgname}/usr/lib/x86_64-linux-gnu
 +    chmod 755 $(find ${pkgname} -type d)
