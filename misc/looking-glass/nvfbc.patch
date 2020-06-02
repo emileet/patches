@@ -1,7 +1,7 @@
-diff --git a/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp b/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp
+diff --git a/host/platform/Windows/capture/NVFBC/src/wrapper.cpp b/host/platform/Windows/capture/NVFBC/src/wrapper.cpp
 index 044134f..0ee271e 100644
---- a/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp
-+++ b/c-host/platform/Windows/capture/NVFBC/src/wrapper.cpp
+--- a/host/platform/Windows/capture/NVFBC/src/wrapper.cpp
++++ b/host/platform/Windows/capture/NVFBC/src/wrapper.cpp
 @@ -114,14 +114,16 @@ bool NvFBCToSysCreate(
    unsigned int * maxHeight
  )
