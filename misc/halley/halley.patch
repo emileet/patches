@@ -1,0 +1,66 @@
+diff --git a/cmake/HalleyProject.cmake b/cmake/HalleyProject.cmake
+index abfd5748..8a074407 100644
+--- a/cmake/HalleyProject.cmake
++++ b/cmake/HalleyProject.cmake
+@@ -47,9 +47,9 @@ endif()
+ # Compiler-specific flags
+ if (MSVC)
+ 	if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /fp:fast /WX -D_ENABLE_EXTENDED_ALIGNED_STORAGE /wd4275 /wd4251")
++		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /fp:fast /WX- -D_ENABLE_EXTENDED_ALIGNED_STORAGE /wd4275 /wd4251")
+ 	else()
+-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:fast /WX -D_ENABLE_EXTENDED_ALIGNED_STORAGE -Wno-unused-private-field -Wno-unused-variable -Wno-deprecated-declarations -Wno-microsoft-cast -Wno-switch -Wno-missing-declarations -Wno-string-plus-int -Wno-unused-function -Wno-assume")
++		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:fast /WX- -D_ENABLE_EXTENDED_ALIGNED_STORAGE -Wno-unused-private-field -Wno-unused-variable -Wno-deprecated-declarations -Wno-microsoft-cast -Wno-switch -Wno-missing-declarations -Wno-string-plus-int -Wno-unused-function -Wno-assume")
+ 	endif()
+ 
+ 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /permissive-")
+@@ -186,7 +186,7 @@ if (USE_OPENGL)
+ 	add_definitions(-DWITH_OPENGL)
+ 	find_package(OpenGL REQUIRED)
+ 	if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+-		find_library(X11 REQUIRED)
++		find_package(X11 REQUIRED)
+ 	else()
+ 		set(X11_LIBRARIES "")
+ 	endif ()
+diff --git a/src/tools/tools/src/assets/importers/shader_importer.cpp b/src/tools/tools/src/assets/importers/shader_importer.cpp
+index 688d183d..369edc75 100644
+--- a/src/tools/tools/src/assets/importers/shader_importer.cpp
++++ b/src/tools/tools/src/assets/importers/shader_importer.cpp
+@@ -90,16 +90,12 @@ Bytes ShaderImporter::convertHLSL(const String& name, ShaderType type, const Byt
+ 	auto result = Compiler::Compile(source, options, target);
+ 
+ 	if (result.hasError) {
+-		const auto msg = String(reinterpret_cast<const char*>(result.errorWarningMsg->Data()), result.errorWarningMsg->Size());
+-		DestroyBlob(result.target);
+-		DestroyBlob(result.errorWarningMsg);
++		const auto msg = String(reinterpret_cast<const char*>(result.errorWarningMsg.Data()), result.errorWarningMsg.Size());
+ 		throw Exception("Error converting shader to " + dstLanguage + ": " + msg, HalleyExceptions::Tools);
+ 	}
+ 
+-	Bytes bytes(result.target->Size());
+-	memcpy(bytes.data(), result.target->Data(), bytes.size());
+-	DestroyBlob(result.target);
+-	DestroyBlob(result.errorWarningMsg);
++	Bytes bytes(result.target.Size());
++	memcpy(bytes.data(), result.target.Data(), bytes.size());
+ 	
+ 	return bytes;
+ }
+diff --git a/src/tools/tools/src/ecs/ecs_data.cpp b/src/tools/tools/src/ecs/ecs_data.cpp
+index dbc12b75..c5548817 100644
+--- a/src/tools/tools/src/ecs/ecs_data.cpp
++++ b/src/tools/tools/src/ecs/ecs_data.cpp
+@@ -8,7 +8,12 @@ using namespace Halley;
+ 
+ void ECSData::loadSources(std::vector<CodegenSourceInfo> files)
+ {
++	std::sort(files.begin(), files.end(), [](CodegenSourceInfo a, CodegenSourceInfo b) -> bool {
++		return a.filename.cppStr() < b.filename.cppStr();
++	});
++    
+ 	++revision;
++
+ 	for (auto& f : files) {
+ 		addSource(f);
+ 	}
